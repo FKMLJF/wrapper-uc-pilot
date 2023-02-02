@@ -31,15 +31,15 @@ function App(): JSX.Element {
     );
 }
 
-function UrilCardPage(navigation: any): JSX.Element {
+function UrilCardPage(props: any): JSX.Element {
     const URL = 'https://uc.procats.hu';
     const webView = useRef<WebView>(null);
 
-    const readQrCode = async () => {
-        navigation.navigate('CodeReader')
+    const readQrCode = () => {
+        props.navigation.navigate('CodeReader')
     }
 
-    const readNFCTag = async () => {
+    const readNFCTag = () => {
         // do something
     }
 
@@ -51,11 +51,11 @@ function UrilCardPage(navigation: any): JSX.Element {
                 onLoadEnd={ () => webView.current?.postMessage("webViewLoaded") }
                 onMessage={ (event) => {
                     switch (event.nativeEvent.data) {
-                        case "read-to-qr-code" :
-                            readQrCode().then(r => {});
+                        case "read-qr-code" :
+                            readQrCode();
                             break;
-                        case "read-to-nfc-tag" :
-                            readNFCTag().then(r => {});
+                        case "read-nfc-tag" :
+                            readNFCTag();
                             break;
                         default:
                             break;
@@ -74,26 +74,24 @@ function QRCodeReader(): JSX.Element {
     };
 
     return (
-        <View style={styles.body}>
-            <RNCamera
-                onBarCodeRead={ onSuccess.bind(this) }
-                style={styles.preview}
-                type={RNCamera.Constants.Type.back}
-                flashMode={RNCamera.Constants.FlashMode.on}
-                androidCameraPermissionOptions={{
-                    title: 'Permission to use camera',
-                    message: 'We need your permission to use your camera',
-                    buttonPositive: 'Ok',
-                    buttonNegative: 'Cancel',
-                }}
-                androidRecordAudioPermissionOptions={{
-                    title: 'Permission to use audio recording',
-                    message: 'We need your permission to use your audio',
-                    buttonPositive: 'Ok',
-                    buttonNegative: 'Cancel',
-                }}>
-            </RNCamera>
-        </View>
+        <RNCamera
+            onBarCodeRead={(event) => onSuccess.bind(event)}
+            style={styles.preview}
+            type={RNCamera.Constants.Type.back}
+            flashMode={RNCamera.Constants.FlashMode.on}
+            androidCameraPermissionOptions={{
+                title: 'Permission to use camera',
+                message: 'We need your permission to use your camera',
+                buttonPositive: 'Ok',
+                buttonNegative: 'Cancel',
+            }}
+            androidRecordAudioPermissionOptions={{
+                title: 'Permission to use audio recording',
+                message: 'We need your permission to use your audio',
+                buttonPositive: 'Ok',
+                buttonNegative: 'Cancel',
+            }}>
+        </RNCamera>
     )
 }
 
